@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <locale.h>
+
+int main()
+{
+	setlocale (LC_ALL, "portuguese");
+	
+	int n1, n2, n3, n4, n5;
+	int maior;
+	int menor;
+    printf("Informe cinco números:\n");
+	printf("n1:");
+	scanf("%d", &n1);
+	printf("n2:");
+	scanf("%d", &n2);
+	printf("n3:");
+	scanf("%d", &n3);
+	printf("n4:");
+	scanf("%d", &n4);
+	printf("n5:");
+	scanf("%d", &n5);
+	
+maior = n1;
+	if (n1 > n2){(maior = n1);
+}
+else (maior = n2);
+	if (maior > n3){ (maior = maior);
+	}
+else (maior = n3);
+	if (maior > n4){ (maior = maior);
+}
+else ( maior = n4);
+	if (maior > n5){ (maior = maior);
+}
+else ( maior = n5);
+
+/*------------------------------------------------------------------------------------*/
+
+menor = n1;
+	if (n1 < n2){(menor = n1);
+}
+else (menor = n2);
+	if (menor < n3){ (menor = menor);
+	}
+else (menor = n3);
+	if (menor < n4){ (menor = menor);
+}
+else ( menor = n4);
+	if (menor < n5){ (menor = menor);
+}
+else ( menor = n5);
+
+printf("\nO maior número é: %d.\n", maior);
+printf("O menor número é: %d.\n", menor);
+return 0;
+}

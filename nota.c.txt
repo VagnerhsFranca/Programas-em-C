@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <locale.h>
+
+int main()
+{
+    setlocale(LC_ALL,"portuguese");
+    
+    float nota;
+     printf("Informe a nota:");
+     scanf("%f", &nota);
+     
+     while (nota > 10 || nota < 0){
+         printf("Informe uma nota de 0 à 10:");
+         scanf ("%f", &nota);
+     }
+     if (nota >= 7){
+         printf("O aluno foi aprovado.");
+     }
+     
+     if (nota < 7){
+         
+         if (nota >= 2) printf ("O aluno poderá fazer a prova final.");
+         
+         else printf("O aluno foi reprovado.");
+     }
+     
+    return 0;
+}
