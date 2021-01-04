@@ -1,0 +1,457 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>   
+    
+	FILE *agenda;
+    
+    
+    typedef struct{
+    char nome[30];
+    char fone[11];
+    char email [30];
+    }contato;
+    
+    contato arq, flag,copia;
+    
+    void CADASTRAR();
+    
+    void LISTAR();
+    
+    int PESQUISAR();
+    
+    void EXCLUIR();
+    
+    void MENU();
+    
+    void EDITAR();
+    
+    int LIST_PESQ();
+    
+    int BUSCAR(char numero[]);
+    
+    int main(){
+	setlocale(LC_ALL, "portuguese");
+	
+	MENU();
+	
+}
+
+	
+	void MENU(){
+		
+	char enter;
+	int teste=1, opr, loop;
+	
+	printf("\t\t\tBEM VINDO A SUA AGENDA!\n\t\t\t(Tecle ENTER para iniciar)\n");
+    scanf("%c",&enter);
+    
+    while(teste == 1){
+	printf("MENU\n1-CRIAR CONTATO\n2-LISTAR\n3-PESQUISAR\n4-EXCLUIR\n5-EDITAR\n6-SAIR\n");
+    printf("O que deseja realizar? ");
+    scanf("%i", &opr);
+	system("cls");
+			
+		switch (opr){
+			
+			case 1://CADASTRAR
+			loop = 1;
+
+				do{
+				CADASTRAR();
+				printf("\n\nDeseja cadastrar outro contato(0-NÃO\t1-SIM)? ");
+				scanf("%i", &loop);
+				system("cls");
+				}while(loop == 1);
+			teste = 1;
+			break;
+				
+			case 2: //LISTAR();
+			LISTAR();
+			system("pause");
+			system("cls");
+			teste = 1;
+			break;
+			
+			case 3: //PESQUISAR
+			PESQUISAR();
+			system("pause");
+			system("cls");
+			teste = 1;
+			break;
+				
+			case 4: //EXCLUIR
+			loop = 1;
+				do{
+				EXCLUIR();
+				printf("\n\nDeseja excluir outro contato(0-NÃO\t1-SIM)? ");
+				scanf("%i", &loop);
+				system("cls");
+				}while(loop == 1);	
+			teste = 1;
+			break;
+				
+			case 5: //EDITAR
+				do{
+				EDITAR();
+				printf("\n\nDeseja editar outro contato(0-NÃO\t1-SIM)? ");
+				scanf("%i", &loop);
+				system("cls");
+				}while(loop == 1);
+			teste = 1;
+			break; 
+				
+			case 6: //SAIR
+			teste = 0;
+			break;
+				
+			defalt:
+			system("cls");
+			teste = 1;
+			break;
+		}
+	}
+}
+
+	void CADASTRAR(){
+	
+	int exist;
+	char numero[11],nome[20],email[20];
+	agenda = fopen("agenda.txt", "a+b");
+	
+		if(agenda == NULL)
+		printf("O arquivo não pode ser aberto.\n");
+		
+		else{
+		printf("\t\tCADASTRO\n\n");	
+		
+		printf("Nome e Sobrenome: ");
+		fflush(stdin);
+		gets(arq.nome);
+		strcpy(nome, arq.nome);
+		
+		printf("Telefone(DDD+NÚMERO): ");
+		fflush(stdin);
+		gets(arq.fone);
+		strcpy(numero, arq.fone);
+	
+		printf("Email: ");
+		fflush(stdin);
+		gets(arq.email);
+		strcpy(email, arq.email);
+	
+		exist=BUSCAR(numero);
+		strcpy(arq.nome, nome);
+		strcpy(arq.fone, numero);
+		strcpy(arq.email, email);
+		
+		fseek(agenda, 0, SEEK_END);
+		if(exist == -1){
+		printf("\n\nNome: %s\nTelefone: %s\nEmail: %s", arq.nome, arq.fone, arq.email);
+		fwrite(&arq, sizeof(contato), 1, agenda);
+		}
+		else{
+		printf("O telefone já existe.\n");
+		system("pause");
+		}
+		fclose(agenda);
+		}
+	}
+
+	void LISTAR(){
+	
+	int tam=0,cont=0;
+	
+	agenda = fopen("agenda.txt", "r+b");
+	rewind(agenda);
+	
+		if(agenda == NULL)
+		printf("O arquivo não pode ser aberto.\n");
+	
+		else{
+		printf("\t\tLISTA\n\n");
+		printf("NOME*****TELEFONE**EMAIL\n");
+		rewind(agenda);
+		fread(&arq, sizeof(contato), 1, agenda);
+		
+			while(feof(agenda) == 0){
+			
+				
+				if(arq.nome[0] != NULL && arq.fone[0] != NULL && arq.email[0] != NULL){
+				
+				printf("%s", arq.nome);
+				tam = strlen(arq.nome);
+					for(cont = tam; cont < 30; cont++)
+					printf("_");
+			
+				printf("%s", arq.fone);
+				tam = strlen(arq.fone);
+					for(cont = tam; cont < 20; cont++)
+					printf("_");
+		
+				printf("%s\n", arq.email);
+				}
+			fread(&arq, sizeof(contato), 1, agenda);
+			}
+	
+		}
+			fclose(agenda);	
+	}
+
+	int PESQUISAR(){
+	
+	int tam = 0,cont = 0,achou = 0;
+	char pesq;
+	//achou != 0 - ctt existe;
+	
+	
+	agenda = fopen("agenda.txt", "r+b");
+	rewind(agenda);
+	
+		if(agenda == NULL)
+		printf("O arquivo não pode ser aberto.\n");
+	
+		else{
+		printf("Informe a letra inicial: ");
+		fflush(stdin);
+		scanf("%s", &pesq);
+	
+		printf("\t\tLISTA\n\n");
+		printf("NOME*****TELEFONE**EMAIL\n");
+		
+		rewind(agenda);
+		fread(&arq, sizeof(contato), 1, agenda);
+			while(feof(agenda) == 0){
+			
+				//MINUSCULO
+				if(pesq >= 97 && pesq <= 122){
+					if(pesq == arq.nome[0] || pesq-32 == arq.nome[0]){
+					printf("%s", arq.nome);
+					tam = strlen(arq.nome);
+						for(cont = tam; cont < 30; cont++)
+						printf("_");
+			
+					printf("%s", arq.fone);
+					tam = strlen(arq.fone);
+						for(cont = tam; cont < 20; cont++)
+						printf("_");
+		
+					printf("%s\n", arq.email);
+					achou++;
+					}
+				}
+				
+				//MAIUSCULO
+				else if(pesq >= 65 && pesq <= 90){
+					if(pesq == arq.nome[0] || pesq+32 == arq.nome[0]){
+					printf("%s", arq.nome);
+					tam = strlen(arq.nome);
+						for(cont = tam; cont < 20; cont++)
+						printf("_");
+			
+					printf("%s", arq.fone);
+					tam = strlen(arq.fone);
+						for(cont = tam; cont < 20; cont++)
+						printf("_");
+		
+					printf("%s\n", arq.email);
+					achou++;
+					}
+				}
+				fread(&arq, sizeof(contato), 1, agenda);
+			}
+			if (achou == 0)
+			printf("Contato não encontrado.\n");
+			
+	
+		}
+		fclose(agenda);
+		return achou;	
+}
+
+int BUSCAR(char numero[11]){ 
+	int p;
+	rewind(agenda);
+		fread(&arq, sizeof(contato), 1, agenda);
+				while(feof(agenda) == 0){
+					
+					if(strcmp(numero,arq.fone) == 0){
+						return p;
+					}else{
+					p++;
+					}
+					
+				fread(&arq, sizeof(contato), 1, agenda);
+				}
+				
+			return -1;
+}
+
+	void EXCLUIR(){
+		
+	char telefone[11];
+	int resu;
+	
+	
+		LIST_PESQ();
+		printf("\n\n\t\tEXCLUIR\n\n");
+		printf("Informe o telefone a ser excluído: ");
+		fflush(stdin);
+		gets(telefone);
+		
+			agenda = fopen("agenda.txt", "r+b");
+			if(agenda == NULL)
+			printf("O arquivo não pode ser aberto.\n");
+	
+			else{
+			
+			resu=BUSCAR(telefone);
+			
+			if(resu != -1){
+			printf("%s\n",arq.nome);
+			fseek(agenda,resu*sizeof(contato),SEEK_SET);
+			fwrite(&flag,sizeof(contato),1,agenda);
+				printf("Contato excluído.\n");
+			}else{
+				printf("Contato não encontrado.\n");
+			}
+			
+			}
+
+	
+	fclose(agenda);
+}
+		
+	int LIST_PESQ(){
+	
+	int opr, achou = 0;
+	//achou != 0 - ctt existe;
+	
+	
+	printf("1-LISTAR TODOS OS CONTATOS\n2-PESQUISAR PELA INICIAL\n?");
+	scanf("%i", &opr);
+	
+		switch(opr){
+		
+		case 1:
+		LISTAR();
+		achou = 1;
+		return achou;
+		break;
+		
+		case 2:
+		achou = PESQUISAR();
+		return achou;
+		break;
+		
+		default :
+		printf("Informe uma opção válida: ");
+		scanf("%i", &opr);
+		}
+	}
+	
+void EDITAR(){
+	int op,resu,loop=1,geral=1,tem,confi;
+	char nume[20];
+	int tam=0,cont=0;
+	agenda=fopen("agenda.txt","r+b");
+	
+
+    printf("\t\tAREA DE EDIÇÃO\n");
+  
+    if(agenda == NULL){
+    	printf("O arquivo não pode ser aberto.\n");
+	}else{
+		
+		
+		rewind(agenda);
+		printf("\nNOME*****TELEFONE**EMAIL\n");
+		fread(&arq, sizeof(contato), 1, agenda);
+		
+			while(feof(agenda) == 0){
+			
+				
+				if(arq.nome[0] != NULL && arq.fone[0] != NULL && arq.email[0] != NULL){
+				
+				printf("%s", arq.nome);
+				tam = strlen(arq.nome);
+					for(cont = tam; cont < 30; cont++)
+					printf("_");
+			
+				printf("%s", arq.fone);
+				tam = strlen(arq.fone);
+					for(cont = tam; cont < 20; cont++)
+					printf("_");
+		
+				printf("%s\n", arq.email);
+				}
+			fread(&arq, sizeof(contato), 1, agenda);
+			}
+			
+			
+	rewind(agenda);
+	
+	
+    printf("\n\nInforme o telefone a ser editado:");
+    fflush(stdin);
+    gets(nume);
+    resu=BUSCAR(nume);
+    
+    	
+    
+    if(resu != -1){
+    	
+    printf("\n\nOPÇÕES DE EDIÇÃO:\n\nNOME: 1\nNUMERO:2\nEMAIL:3\nSAIR:4\n\nINFORME SUA OPÇÃO: ");
+    scanf("%d",&op);
+    
+   
+    switch(op){
+    	
+    	case 1:
+    		printf("\nInforme o novo nome: ");
+    		fflush(stdin);
+    		gets(arq.nome);
+    	
+			fseek(agenda,resu*sizeof(contato),SEEK_SET);
+			fwrite(&arq,sizeof(contato),1,agenda);
+		
+    		break;
+    	
+    	case 2:
+    		printf("\nInforme o novo numero: ");
+    		fflush(stdin);
+    		gets(arq.fone);
+    		
+			fseek(agenda,resu*sizeof(contato),SEEK_SET);
+			fwrite(&arq,sizeof(contato),1,agenda);
+    		break;
+    	
+    	case 3:
+    		printf("\nInforme o novo numero: ");
+    		fflush(stdin);
+    		gets(arq.email);
+    		
+			fseek(agenda,resu*sizeof(contato),SEEK_SET);
+			fwrite(&arq,sizeof(contato),1,agenda);
+    		break;
+    	
+    	default:
+    		printf("EDIÇÃO CANCELADA.");
+    		break;
+    		
+	}
+
+
+    }else{
+    	printf("\nNUMERO NAO ENCONTRADO...");
+    	geral=0;
+}
+
+
+}
+
+	
+	fclose(agenda);
+}
+
+
